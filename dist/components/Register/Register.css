@@ -1,0 +1,7 @@
+.Register button[type=submit] {
+  margin-top:15px;
+}
+
+.Register .SelectField {
+  margin: 5px 0;
+}
