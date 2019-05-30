@@ -1,47 +1,34 @@
 // @flow
 
 import React, { Component } from 'react'
-import {
-    getAuthFailedAttempts,
-    getAuthError,
-    clearError,
-    getAuthPending,
-    getAuthState,
-} from '../../state'
-import { login } from '../../state/effects'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import SubmitButton from '../SubmitButton/SubmitButton'
+import type { ViewState } from '../../state'
+import { ERROR_STATE, PENDING_STATE } from '../../state'
 
-type StoreProps = {
-    pending: boolean,
-    error: ?string,
-    failedAttempts: number,
-}
-
-type Actions = {
+type Props = {
+    state: ViewState,
     clearError: Function,
-    login: Function,
+    onSubmit: Function,
 }
 
 type State = {
-    username: string,
+    email: string,
     password: string,
 }
 
-export class LoginComponent extends Component<StoreProps & Actions, State> {
-    state = { username: '', password: '' }
+export default class LoginComponent extends Component<Props, State> {
+    state = { email: '', password: '' }
 
     handleSubmit = (event: { preventDefault: Function }) => {
         event.preventDefault()
-        this.props.login({
-            username: this.state.username,
+        this.props.onSubmit({
+            email: this.state.email,
             password: this.state.password,
         })
     }
 
     handleInputChange(event: { target: { value: string, name: string } }) {
-        if (this.props.error) {
+        if (this.props.state.status === ERROR_STATE && this.props.clearError) {
             this.props.clearError()
         }
         this.setState({
@@ -50,20 +37,20 @@ export class LoginComponent extends Component<StoreProps & Actions, State> {
     }
 
     render() {
-        const { username, password } = this.state
-        const { pending, error } = this.props
-        const errorMessage = error && (
-            <div className="alert alert-danger error">{error}</div>
+        const { email, password } = this.state
+        const { state } = this.props
+        const errorMessage = state.status === ERROR_STATE && (
+            <div className="alert alert-danger error">{state.error}</div>
         )
         return (
             <div className="accounts-form center-form">
                 <form>
                     <input
-                        name="username"
+                        name="email"
                         type="text"
-                        value={username}
+                        value={email}
                         onChange={e => this.handleInputChange(e)}
-                        placeholder="Username"
+                        placeholder="Email"
                     />
                     <input
                         name="password"
@@ -75,7 +62,7 @@ export class LoginComponent extends Component<StoreProps & Actions, State> {
                     <SubmitButton
                         text="Login"
                         onSubmit={e => this.handleSubmit(e)}
-                        pending={pending}
+                        pending={state.status === PENDING_STATE}
                     />
                     {errorMessage}
                 </form>
@@ -83,23 +70,3 @@ export class LoginComponent extends Component<StoreProps & Actions, State> {
         )
     }
 }
-
-export default connect(
-    (state): StoreProps => {
-        const authState = getAuthState(state)
-        return {
-            failedAttempts: getAuthFailedAttempts(authState),
-            error: getAuthError(authState),
-            pending: getAuthPending(authState),
-        }
-    },
-    (dispatch): Actions => {
-        return bindActionCreators(
-            {
-                login,
-                clearError,
-            },
-            dispatch
-        )
-    }
-)(LoginComponent)

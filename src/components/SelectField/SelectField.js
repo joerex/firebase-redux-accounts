@@ -14,9 +14,7 @@ type ParentProps = {
 }
 
 export default ({ options, field, form, placeholder }: ParentProps) => {
-    const value = options
-        ? options.find((option: OptionType) => option.value === field.value)
-        : null
+    const value = form.values[field.name]
     const onChange = (option: ValueType) => {
         form.setFieldValue(field.name, option)
     }

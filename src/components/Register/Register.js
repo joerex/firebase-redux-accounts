@@ -4,53 +4,20 @@ import React, { Fragment } from 'react'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import SelectField from '../SelectField/SelectField'
-import {
-    getAuthError,
-    getAuthPending,
-    getAuthRegisterSuccess,
-    getAuthState,
-    getAuthToken,
-} from '../../state'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import SubmitButton from '../SubmitButton/SubmitButton'
 import './Register.css'
 import type { Field as FieldType } from '../../index'
+import type { ViewState } from '../../state'
+import { ERROR_STATE, PENDING_STATE } from '../../state'
 
-type ParentProps = {
-    redirect: string,
-    uid: string,
-    fields: Array<FieldType>,
-    action: Function,
-    successMessage: ?string,
+type Props = {
+    state: ViewState,
+    onSubmit: Function,
+    fields: [FieldType],
 }
 
-type StoreProps = {
-    error: ?string,
-    token: ?string,
-    registerSuccess: boolean,
-    pending: boolean,
-}
-
-type Actions = {
-    dispatch: Function,
-}
-
-export const RegisterComponent = (
-    props: ParentProps & StoreProps & Actions
-) => {
-    const {
-        error,
-        token,
-        registerSuccess,
-        successMessage,
-        redirect,
-        uid,
-        fields,
-        action,
-        dispatch,
-        pending,
-    } = props
+export default (props: Props) => {
+    const { state, onSubmit, fields } = props
 
     const fieldComponents = fields.map((field, i) => {
         return (
@@ -113,30 +80,15 @@ export const RegisterComponent = (
         }
     }, {})
 
-    const acceptInvite = values => {
-        return dispatch(action(values, token, uid))
-    }
-
-    const newRegister = (values, reset) => {
-        return dispatch(action(values, token, reset))
-    }
-
-    const register = (values, { resetForm }) => {
-        uid ? acceptInvite(values) : newRegister(values, resetForm)
-    }
-
-    const errorMessage = error && (
-        <div className="alert alert-danger error">{error}</div>
+    const errorMessage = state.status === ERROR_STATE && (
+        <div className="alert alert-danger error">{state.error}</div>
     )
 
     return (
         <div className="Register accounts-form">
-            {registerSuccess && (
+            {state.success && (
                 <div className="alert alert-success">
-                    {successMessage
-                        ? successMessage
-                        : 'Your account has been created.'}
-                    {redirect && <Link to={redirect}>Login</Link>}
+                    <span>Your account has been created.</span>
                 </div>
             )}
 
@@ -145,13 +97,13 @@ export const RegisterComponent = (
                 validateOnBlur={false}
                 validateOnChange={false}
                 validationSchema={schema}
-                onSubmit={(e, b) => register(e, b)}
+                onSubmit={(e, b) => onSubmit(e, b)}
                 render={({ handleSubmit }) => (
                     <Form>
                         {fieldComponents}
                         <SubmitButton
                             onSubmit={handleSubmit}
-                            pending={pending}
+                            pending={state.status === PENDING_STATE}
                             text="Register"
                         />
                         {errorMessage}
@@ -161,18 +113,3 @@ export const RegisterComponent = (
         </div>
     )
 }
-
-export default connect(
-    (state): StoreProps => {
-        const authState = getAuthState(state)
-        return {
-            error: getAuthError(authState),
-            registerSuccess: getAuthRegisterSuccess(authState),
-            token: getAuthToken(authState),
-            pending: getAuthPending(authState),
-        }
-    },
-    (dispatch): Actions => {
-        return { dispatch }
-    }
-)(RegisterComponent)

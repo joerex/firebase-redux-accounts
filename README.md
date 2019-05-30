@@ -29,7 +29,7 @@ import {
     combineReducers 
 } from 'redux';
 import thunk from 'redux-thunk';
-import authReducer from 'react-redux-accounts/dist/state';
+import authReducer from 'firebase-redux-accounts/dist/state';
 import appReducer './reducers'
 
 const store = createStore(
@@ -54,7 +54,7 @@ An `auth` service wraps the firebase application and dispatches actions on auth 
 // App.js
 
 import * as firebase from "firebase"
-import auth from 'react-redux-accounts/dist/services'
+import auth from 'firebase-redux-accounts/dist/services'
 import {settings} from './settings';
 
 class App extends Component {
@@ -84,7 +84,7 @@ import {
   getAuthResetPasswordSuccess,
   getAuthRegisterSuccess,
   getUser
-} from 'react-redux-accounts/dist/reducer';
+} from 'firebase-redux-accounts/dist/reducer';
 
 ...
 
@@ -110,7 +110,7 @@ import {
   Logout,
   Register,
   ForgotPassword,
-} from 'react-redux-accounts/dist/components';
+} from 'firebase-redux-accounts/dist/components';
 ```
 
 #### Dispatch actions / effects directly
@@ -125,14 +125,14 @@ import {
   resetPasswordSuccess,
   updatePasswordSuccess,
   clearError
-} from 'react-redux-accounts/dist/actions';
+} from 'firebase-redux-accounts/dist/actions';
 
 import {
   resetPassword,
   register,
   login,
   logout
-} from 'react-redux-accounts/dist/effects';
+} from 'firebase-redux-accounts/dist/effects';
 ```
 
 ## Invitations

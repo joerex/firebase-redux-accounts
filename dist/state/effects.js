@@ -5,12 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.logout = exports.login = exports.adminRegister = exports.acceptInvite = exports.register = exports.resetPassword = exports.clearLocalStorage = void 0;
 
-var _services = _interopRequireDefault(require("../services"));
-
-var _state = require("../state");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -56,14 +50,17 @@ var clearLocalStorage = function clearLocalStorage(settings) {
 };
 /***
  * Send reset password effect
+ * @param sendPasswordResetEmail
  * @param email
+ * @param success
+ * @param error
  * @returns {Function}
  */
 
 
 exports.clearLocalStorage = clearLocalStorage;
 
-var resetPassword = function resetPassword(email) {
+var resetPassword = function resetPassword(sendPasswordResetEmail, email, success, error) {
   return (
     /*#__PURE__*/
     function () {
@@ -76,27 +73,26 @@ var resetPassword = function resetPassword(email) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.prev = 0;
-                dispatch((0, _state.authPending)());
-                _context.next = 4;
-                return _services["default"].auth.sendPasswordResetEmail(email);
+                _context.next = 3;
+                return sendPasswordResetEmail(email);
 
-              case 4:
+              case 3:
                 response = _context.sent;
-                dispatch((0, _state.resetPasswordSuccess)(email));
-                _context.next = 11;
+                dispatch(success());
+                _context.next = 10;
                 break;
 
-              case 8:
-                _context.prev = 8;
+              case 7:
+                _context.prev = 7;
                 _context.t0 = _context["catch"](0);
-                dispatch((0, _state.authError)(mapError(_context.t0)));
+                dispatch(error(mapError(_context.t0)));
 
-              case 11:
+              case 10:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 8]]);
+        }, _callee, null, [[0, 7]]);
       }));
 
       return function (_x) {
@@ -114,43 +110,44 @@ exports.resetPassword = resetPassword;
 
 /***
  * Public register effect
- * @param params
+ * @param createUserWithEmailAndPassword
+ * @param credentials
+ * @param profile
+ * @param success
+ * @param error
  * @returns {Function}
  */
-var register = function register(params) {
+var register = function register(createUserWithEmailAndPassword, credentials, profile, success, error) {
   return (
     /*#__PURE__*/
     function () {
       var _ref2 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee2(dispatch) {
-        var user;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.prev = 0;
-                dispatch((0, _state.authPending)());
-                _context2.next = 4;
-                return _services["default"].auth.createUserWithEmailAndPassword(params.email, params.password);
+                _context2.next = 3;
+                return createUserWithEmailAndPassword(credentials, profile);
 
-              case 4:
-                user = _context2.sent;
-                dispatch((0, _state.loginSuccess)(user));
-                _context2.next = 11;
+              case 3:
+                dispatch(success());
+                _context2.next = 9;
                 break;
 
-              case 8:
-                _context2.prev = 8;
+              case 6:
+                _context2.prev = 6;
                 _context2.t0 = _context2["catch"](0);
-                dispatch((0, _state.authError)(mapError(_context2.t0)));
+                dispatch(error(mapError(_context2.t0)));
 
-              case 11:
+              case 9:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[0, 8]]);
+        }, _callee2, null, [[0, 6]]);
       }));
 
       return function (_x2) {
@@ -170,29 +167,30 @@ exports.register = register;
  * Accept invite / register effect
  * @param params
  * @param token
- * @param uid
+ * @param key
+ * @param success
+ * @param error
  * @returns {Function}
  */
-var acceptInvite = function acceptInvite(params, token, uid) {
+var acceptInvite = function acceptInvite(params, token, key, success, error) {
   return (
     /*#__PURE__*/
     function () {
       var _ref3 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee3(dispatch, settings) {
-        var endpoint, request;
+        var endpoint, request, response;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.prev = 0;
-                dispatch((0, _state.authPending)());
                 endpoint = settings.endpoint ? settings.endpoint.inviteUser : '/acceptInvite';
-                _context3.next = 5;
+                _context3.next = 4;
                 return fetch(API_ROOT + endpoint, {
                   method: 'POST',
                   body: JSON.stringify(_objectSpread({}, params, {
-                    uid: uid,
+                    key: key,
                     token: token
                   })),
                   headers: {
@@ -200,27 +198,41 @@ var acceptInvite = function acceptInvite(params, token, uid) {
                   }
                 });
 
-              case 5:
+              case 4:
                 request = _context3.sent;
 
-                if (request.ok) {
-                  dispatch((0, _state.inviteAccepted)());
+                if (!request.ok) {
+                  _context3.next = 9;
+                  break;
                 }
 
-                _context3.next = 12;
+                dispatch(success());
+                _context3.next = 13;
                 break;
 
               case 9:
-                _context3.prev = 9;
-                _context3.t0 = _context3["catch"](0);
-                dispatch((0, _state.authError)(mapError(_context3.t0)));
+                _context3.next = 11;
+                return request.json();
 
-              case 12:
+              case 11:
+                response = _context3.sent;
+                dispatch(error(mapError(response)));
+
+              case 13:
+                _context3.next = 18;
+                break;
+
+              case 15:
+                _context3.prev = 15;
+                _context3.t0 = _context3["catch"](0);
+                dispatch(error(mapError(_context3.t0)));
+
+              case 18:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, null, [[0, 9]]);
+        }, _callee3, null, [[0, 15]]);
       }));
 
       return function (_x3, _x4) {
@@ -240,11 +252,13 @@ exports.acceptInvite = acceptInvite;
  * Admin register effect
  * @param params
  * @param token
+ * @param success
+ * @param error
  * @param reset
  * @param settings
  * @returns {Function}
  */
-var adminRegister = function adminRegister(params, token, reset, settings) {
+var adminRegister = function adminRegister(params, token, success, error, reset, settings) {
   return (
     /*#__PURE__*/
     function () {
@@ -257,9 +271,8 @@ var adminRegister = function adminRegister(params, token, reset, settings) {
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.prev = 0;
-                dispatch((0, _state.authPending)());
                 endpoint = settings && settings.endpoint ? settings.endpoint.inviteUser : '/inviteUser';
-                _context4.next = 5;
+                _context4.next = 4;
                 return fetch(API_ROOT + endpoint, {
                   method: 'POST',
                   body: JSON.stringify(_objectSpread({}, params, {
@@ -270,35 +283,35 @@ var adminRegister = function adminRegister(params, token, reset, settings) {
                   }
                 });
 
-              case 5:
+              case 4:
                 request = _context4.sent;
-                _context4.next = 8;
+                _context4.next = 7;
                 return request.json();
 
-              case 8:
+              case 7:
                 response = _context4.sent;
 
                 if (ok(response)) {
-                  dispatch((0, _state.registerSuccess)());
+                  dispatch(success());
                   reset && reset();
                 } else {
-                  dispatch((0, _state.authError)(mapError(response)));
+                  dispatch(error(mapError(response)));
                 }
 
-                _context4.next = 15;
+                _context4.next = 14;
                 break;
 
-              case 12:
-                _context4.prev = 12;
+              case 11:
+                _context4.prev = 11;
                 _context4.t0 = _context4["catch"](0);
-                dispatch((0, _state.authError)(mapError(_context4.t0)));
+                dispatch(error(mapError(_context4.t0)));
 
-              case 15:
+              case 14:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee4, null, [[0, 12]]);
+        }, _callee4, null, [[0, 11]]);
       }));
 
       return function (_x5) {
@@ -316,40 +329,45 @@ exports.adminRegister = adminRegister;
 
 /***
  * Login effect
+ * @param signInWithEmailAndPassword
  * @param params
+ * @param success
+ * @param error
  * @returns {Function}
  */
-var login = function login(params) {
+var login = function login(signInWithEmailAndPassword, params, success, error) {
   return (
     /*#__PURE__*/
     function () {
       var _ref5 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee5(dispatch) {
+        var response;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
                 _context5.prev = 0;
-                dispatch((0, _state.authPending)());
-                _context5.next = 4;
-                return _services["default"].auth.signInWithEmailAndPassword(params.username, params.password);
+                _context5.next = 3;
+                return signInWithEmailAndPassword(params);
 
-              case 4:
-                _context5.next = 9;
+              case 3:
+                response = _context5.sent;
+                dispatch(success());
+                _context5.next = 10;
                 break;
 
-              case 6:
-                _context5.prev = 6;
+              case 7:
+                _context5.prev = 7;
                 _context5.t0 = _context5["catch"](0);
-                dispatch((0, _state.authError)(mapError(_context5.t0)));
+                dispatch(error(mapError(_context5.t0)));
 
-              case 9:
+              case 10:
               case "end":
                 return _context5.stop();
             }
           }
-        }, _callee5, null, [[0, 6]]);
+        }, _callee5, null, [[0, 7]]);
       }));
 
       return function (_x6) {
@@ -366,14 +384,13 @@ var login = function login(params) {
 
 exports.login = login;
 
-var logout = function logout() {
+var logout = function logout(signOut, success, error) {
   return function (dispatch) {
     try {
-      dispatch((0, _state.authPending)());
-
-      _services["default"].signOut();
-    } catch (error) {
-      dispatch((0, _state.authError)(mapError(error)));
+      signOut();
+      dispatch(success());
+    } catch (e) {
+      dispatch(error(mapError(e)));
     }
   };
 };

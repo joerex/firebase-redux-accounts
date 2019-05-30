@@ -1,45 +1,31 @@
 // @flow
 
 import React, { Component } from 'react'
-import { resetPassword } from '../../state/effects'
-import { connect } from 'react-redux'
-import {
-    getAuthError,
-    getAuthFailedAttempts,
-    getAuthPending,
-    getAuthResetPasswordSuccess,
-    getAuthState,
-} from '../../state'
-import { bindActionCreators } from 'redux'
 import SubmitButton from '../SubmitButton/SubmitButton'
+import type { ViewState } from '../../state'
 
-type Model = {
-    resetSuccess: boolean,
-    pending: boolean,
-    error: ?string,
-}
-
-type Actions = {
-    resetPassword: Function,
+type Props = {
+    state: ViewState,
+    onSubmit: Function,
 }
 
 type State = {
     email: string,
 }
 
-export class ForgotPasswordComponent extends Component<Model & Actions, State> {
+export default class ForgotPasswordComponent extends Component<Props, State> {
     state: State = { email: '' }
 
     handleSubmit = (event: { preventDefault: Function }) => {
         event.preventDefault()
-        this.props.resetPassword(this.state.email)
+        this.props.onSubmit(this.state.email)
     }
 
     render() {
-        const { resetSuccess, pending, error } = this.props
+        const { state } = this.props
         const { email } = this.state
 
-        const statusMessage = resetSuccess ? (
+        const statusMessage = state.success ? (
             <div className="alert alert-success">
                 A password reset link has been sent to your email.
             </div>
@@ -50,8 +36,8 @@ export class ForgotPasswordComponent extends Component<Model & Actions, State> {
             </div>
         )
 
-        const errorMessage = error && (
-            <div className="alert alert-danger error">{error}</div>
+        const errorMessage = state.status === 'ERROR' && (
+            <div className="alert alert-danger error">{state.error}</div>
         )
 
         return (
@@ -68,7 +54,7 @@ export class ForgotPasswordComponent extends Component<Model & Actions, State> {
                     />
                     <SubmitButton
                         onSubmit={e => this.handleSubmit(e)}
-                        pending={pending}
+                        pending={state.status === 'PENDING'}
                         text="Send Reset Link"
                     />
                     {errorMessage}
@@ -77,22 +63,3 @@ export class ForgotPasswordComponent extends Component<Model & Actions, State> {
         )
     }
 }
-
-export default connect(
-    (state): Model => {
-        const authState = getAuthState(state)
-        return {
-            error: getAuthError(authState),
-            resetSuccess: getAuthResetPasswordSuccess(authState),
-            pending: getAuthPending(authState),
-        }
-    },
-    (dispatch): Actions => {
-        return bindActionCreators(
-            {
-                resetPassword,
-            },
-            dispatch
-        )
-    }
-)(ForgotPasswordComponent)

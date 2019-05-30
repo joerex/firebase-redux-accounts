@@ -1,45 +1,22 @@
 // @flow
 
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { getAuthState, getAuthToken } from '../../state'
-import { logout } from '../../state/effects'
-import { bindActionCreators } from 'redux'
+import React from 'react'
+import type { ViewState } from '../../state'
+import { PENDING_STATE } from '../../state'
 
-type ParentProps = {
+type Props = {
     text: ?string,
+    onSubmit: Function,
+    state: ViewState,
 }
 
-type StoreProps = {
-    token: ?string,
-}
+export default (props: Props) => {
+    const { text, onSubmit, state } = props
 
-type Actions = {
-    logout: Function,
-}
-
-export class LogoutComponent extends Component<
-    ParentProps & StoreProps & Actions
-> {
-    render() {
-        const { text, logout, token } = this.props
-        return <a onClick={() => logout(token)}>{text ? text : 'Logout'}</a>
+    switch (state.status) {
+        case PENDING_STATE:
+            return <span className="fa fa-spinner fa-spin" />
+        default:
+            return <a onClick={() => onSubmit()}>{text ? text : 'Logout'}</a>
     }
 }
-
-export default connect(
-    (state): StoreProps => {
-        const authState = getAuthState(state)
-        return {
-            token: getAuthToken(authState),
-        }
-    },
-    (dispatch): Actions => {
-        return bindActionCreators(
-            {
-                logout,
-            },
-            dispatch
-        )
-    }
-)(LogoutComponent)

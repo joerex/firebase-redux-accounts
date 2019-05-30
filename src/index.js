@@ -1,5 +1,4 @@
 // @flow
-import '@babel/polyfill'
 import type { FocusEventHandler } from 'react-select/src/types'
 
 export type Auth = {

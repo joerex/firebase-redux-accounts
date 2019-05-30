@@ -3,17 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.ForgotPasswordComponent = void 0;
+exports["default"] = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
-
-var _effects = require("../../state/effects");
-
-var _reactRedux = require("react-redux");
-
-var _state = require("../../state");
-
-var _redux = require("redux");
 
 var _SubmitButton = _interopRequireDefault(require("../SubmitButton/SubmitButton"));
 
@@ -66,7 +58,7 @@ function (_Component) {
     _defineProperty(_assertThisInitialized(_this), "handleSubmit", function (event) {
       event.preventDefault();
 
-      _this.props.resetPassword(_this.state.email);
+      _this.props.onSubmit(_this.state.email);
     });
 
     return _this;
@@ -77,20 +69,17 @@ function (_Component) {
     value: function render() {
       var _this2 = this;
 
-      var _this$props = this.props,
-          resetSuccess = _this$props.resetSuccess,
-          pending = _this$props.pending,
-          error = _this$props.error;
+      var state = this.props.state;
       var email = this.state.email;
-      var statusMessage = resetSuccess ? _react["default"].createElement("div", {
+      var statusMessage = state.success ? _react["default"].createElement("div", {
         className: "alert alert-success"
       }, "A password reset link has been sent to your email.") : _react["default"].createElement("div", {
         className: "alert alert-info"
       }, "Enter your email to have a password reset link sent to your email.");
 
-      var errorMessage = error && _react["default"].createElement("div", {
+      var errorMessage = state.status === 'ERROR' && _react["default"].createElement("div", {
         className: "alert alert-danger error"
-      }, error);
+      }, state.error);
 
       return _react["default"].createElement("div", {
         className: "ForgotPassword accounts-form center-form"
@@ -108,7 +97,7 @@ function (_Component) {
         onSubmit: function onSubmit(e) {
           return _this2.handleSubmit(e);
         },
-        pending: pending,
+        pending: state.status === 'PENDING',
         text: "Send Reset Link"
       }), errorMessage));
     }
@@ -117,19 +106,4 @@ function (_Component) {
   return ForgotPasswordComponent;
 }(_react.Component);
 
-exports.ForgotPasswordComponent = ForgotPasswordComponent;
-
-var _default = (0, _reactRedux.connect)(function (state) {
-  var authState = (0, _state.getAuthState)(state);
-  return {
-    error: (0, _state.getAuthError)(authState),
-    resetSuccess: (0, _state.getAuthResetPasswordSuccess)(authState),
-    pending: (0, _state.getAuthPending)(authState)
-  };
-}, function (dispatch) {
-  return (0, _redux.bindActionCreators)({
-    resetPassword: _effects.resetPassword
-  }, dispatch);
-})(ForgotPasswordComponent);
-
-exports["default"] = _default;
+exports["default"] = ForgotPasswordComponent;

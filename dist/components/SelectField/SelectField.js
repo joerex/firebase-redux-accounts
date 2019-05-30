@@ -22,9 +22,7 @@ var _default = function _default(_ref) {
       field = _ref.field,
       form = _ref.form,
       placeholder = _ref.placeholder;
-  var value = options ? options.find(function (option) {
-    return option.value === field.value;
-  }) : null;
+  var value = form.values[field.name];
 
   var onChange = function onChange(option) {
     form.setFieldValue(field.name, option);

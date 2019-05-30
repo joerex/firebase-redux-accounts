@@ -1,16 +1,6 @@
 // @flow
 
-import firebase from '../services'
 import type { User, AuthSettings } from '../index'
-
-import {
-    authError,
-    authPending,
-    registerSuccess,
-    inviteAccepted,
-    loginSuccess,
-    resetPasswordSuccess,
-} from '../state'
 
 const API_ROOT: string = process.env.REACT_APP_API_ROOT || ''
 
@@ -54,17 +44,24 @@ export const clearLocalStorage = (settings: AuthSettings): Function => {
 
 /***
  * Send reset password effect
+ * @param sendPasswordResetEmail
  * @param email
+ * @param success
+ * @param error
  * @returns {Function}
  */
-export const resetPassword = (email: string): Function => {
+export const resetPassword = (
+    sendPasswordResetEmail: Function,
+    email: string,
+    success: Function,
+    error: Function
+): Function => {
     return async dispatch => {
         try {
-            dispatch(authPending())
-            const response = await firebase.auth.sendPasswordResetEmail(email)
-            dispatch(resetPasswordSuccess(email))
-        } catch (error) {
-            dispatch(authError(mapError(error)))
+            const response = await sendPasswordResetEmail(email)
+            dispatch(success())
+        } catch (e) {
+            dispatch(error(mapError(e)))
         }
     }
 }
@@ -78,22 +75,33 @@ export type RegisterParams = {
     password: string,
 }
 
+export type ProfileParams = {
+    firstName: string,
+    lastName: string,
+}
+
 /***
  * Public register effect
- * @param params
+ * @param createUserWithEmailAndPassword
+ * @param credentials
+ * @param profile
+ * @param success
+ * @param error
  * @returns {Function}
  */
-export const register = (params: RegisterParams): Function => {
+export const register = (
+    createUserWithEmailAndPassword: Function,
+    credentials: RegisterParams,
+    profile: ProfileParams,
+    success: Function,
+    error: Function
+): Function => {
     return async (dispatch: Function) => {
         try {
-            dispatch(authPending())
-            const user: User = await firebase.auth.createUserWithEmailAndPassword(
-                params.email,
-                params.password
-            )
-            dispatch(loginSuccess(user))
-        } catch (error) {
-            dispatch(authError(mapError(error)))
+            await createUserWithEmailAndPassword(credentials, profile)
+            dispatch(success())
+        } catch (e) {
+            dispatch(error(mapError(e)))
         }
     }
 }
@@ -112,30 +120,36 @@ export type AcceptInviteParams = {
  * Accept invite / register effect
  * @param params
  * @param token
- * @param uid
+ * @param key
+ * @param success
+ * @param error
  * @returns {Function}
  */
 export const acceptInvite = (
     params: AcceptInviteParams,
     token: string,
-    uid: string
+    key: string,
+    success: Function,
+    error: Function
 ) => {
     return async (dispatch: Function, settings: AuthSettings) => {
         try {
-            dispatch(authPending())
             const endpoint = settings.endpoint
                 ? settings.endpoint.inviteUser
                 : '/acceptInvite'
             const request = await fetch(API_ROOT + endpoint, {
                 method: 'POST',
-                body: JSON.stringify({ ...params, uid, token }),
+                body: JSON.stringify({ ...params, key, token }),
                 headers: { 'Content-Type': 'application/json' },
             })
             if (request.ok) {
-                dispatch(inviteAccepted())
+                dispatch(success())
+            } else {
+                const response = await request.json()
+                dispatch(error(mapError(response)))
             }
-        } catch (error) {
-            dispatch(authError(mapError(error)))
+        } catch (e) {
+            dispatch(error(mapError(e)))
         }
     }
 }
@@ -159,6 +173,8 @@ export type AdminRegisterParams = {
  * Admin register effect
  * @param params
  * @param token
+ * @param success
+ * @param error
  * @param reset
  * @param settings
  * @returns {Function}
@@ -166,12 +182,13 @@ export type AdminRegisterParams = {
 export const adminRegister = (
     params: AdminRegisterParams,
     token: string,
+    success: Function,
+    error: Function,
     reset: Function,
     settings: AuthSettings
 ) => {
     return async (dispatch: Function) => {
         try {
-            dispatch(authPending())
             const endpoint =
                 settings && settings.endpoint
                     ? settings.endpoint.inviteUser
@@ -183,13 +200,13 @@ export const adminRegister = (
             })
             const response = await request.json()
             if (ok(response)) {
-                dispatch(registerSuccess())
+                dispatch(success())
                 reset && reset()
             } else {
-                dispatch(authError(mapError(response)))
+                dispatch(error(mapError(response)))
             }
-        } catch (error) {
-            dispatch(authError(mapError(error)))
+        } catch (e) {
+            dispatch(error(mapError(e)))
         }
     }
 }
@@ -199,25 +216,30 @@ export const adminRegister = (
  */
 
 export type LoginParams = {
-    username: string,
+    email: string,
     password: string,
 }
 
 /***
  * Login effect
+ * @param signInWithEmailAndPassword
  * @param params
+ * @param success
+ * @param error
  * @returns {Function}
  */
-export const login = (params: LoginParams) => {
+export const login = (
+    signInWithEmailAndPassword: Function,
+    params: LoginParams,
+    success: Function,
+    error: Function
+) => {
     return async (dispatch: Function) => {
         try {
-            dispatch(authPending())
-            await firebase.auth.signInWithEmailAndPassword(
-                params.username,
-                params.password
-            )
-        } catch (error) {
-            dispatch(authError(mapError(error)))
+            const response = await signInWithEmailAndPassword(params)
+            dispatch(success())
+        } catch (e) {
+            dispatch(error(mapError(e)))
         }
     }
 }
@@ -226,13 +248,17 @@ export const login = (params: LoginParams) => {
  * Logout effect
  * @returns {Function}
  */
-export const logout = (): Function => {
+export const logout = (
+    signOut: Function,
+    success: Function,
+    error: Function
+): Function => {
     return (dispatch: Function) => {
         try {
-            dispatch(authPending())
-            firebase.signOut()
-        } catch (error) {
-            dispatch(authError(mapError(error)))
+            signOut()
+            dispatch(success())
+        } catch (e) {
+            dispatch(error(mapError(e)))
         }
     }
 }

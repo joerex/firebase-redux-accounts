@@ -3,19 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.LoginComponent = void 0;
+exports["default"] = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
-var _state = require("../../state");
-
-var _effects = require("../../state/effects");
-
-var _reactRedux = require("react-redux");
-
-var _redux = require("redux");
-
 var _SubmitButton = _interopRequireDefault(require("../SubmitButton/SubmitButton"));
+
+var _state = require("../../state");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -60,15 +54,15 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(LoginComponent)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
     _defineProperty(_assertThisInitialized(_this), "state", {
-      username: '',
+      email: '',
       password: ''
     });
 
     _defineProperty(_assertThisInitialized(_this), "handleSubmit", function (event) {
       event.preventDefault();
 
-      _this.props.login({
-        username: _this.state.username,
+      _this.props.onSubmit({
+        email: _this.state.email,
         password: _this.state.password
       });
     });
@@ -79,7 +73,7 @@ function (_Component) {
   _createClass(LoginComponent, [{
     key: "handleInputChange",
     value: function handleInputChange(event) {
-      if (this.props.error) {
+      if (this.props.state.status === _state.ERROR_STATE && this.props.clearError) {
         this.props.clearError();
       }
 
@@ -91,26 +85,24 @@ function (_Component) {
       var _this2 = this;
 
       var _this$state = this.state,
-          username = _this$state.username,
+          email = _this$state.email,
           password = _this$state.password;
-      var _this$props = this.props,
-          pending = _this$props.pending,
-          error = _this$props.error;
+      var state = this.props.state;
 
-      var errorMessage = error && _react["default"].createElement("div", {
+      var errorMessage = state.status === _state.ERROR_STATE && _react["default"].createElement("div", {
         className: "alert alert-danger error"
-      }, error);
+      }, state.error);
 
       return _react["default"].createElement("div", {
         className: "accounts-form center-form"
       }, _react["default"].createElement("form", null, _react["default"].createElement("input", {
-        name: "username",
+        name: "email",
         type: "text",
-        value: username,
+        value: email,
         onChange: function onChange(e) {
           return _this2.handleInputChange(e);
         },
-        placeholder: "Username"
+        placeholder: "Email"
       }), _react["default"].createElement("input", {
         name: "password",
         type: "password",
@@ -124,7 +116,7 @@ function (_Component) {
         onSubmit: function onSubmit(e) {
           return _this2.handleSubmit(e);
         },
-        pending: pending
+        pending: state.status === _state.PENDING_STATE
       }), errorMessage));
     }
   }]);
@@ -132,20 +124,4 @@ function (_Component) {
   return LoginComponent;
 }(_react.Component);
 
-exports.LoginComponent = LoginComponent;
-
-var _default = (0, _reactRedux.connect)(function (state) {
-  var authState = (0, _state.getAuthState)(state);
-  return {
-    failedAttempts: (0, _state.getAuthFailedAttempts)(authState),
-    error: (0, _state.getAuthError)(authState),
-    pending: (0, _state.getAuthPending)(authState)
-  };
-}, function (dispatch) {
-  return (0, _redux.bindActionCreators)({
-    login: _effects.login,
-    clearError: _state.clearError
-  }, dispatch);
-})(LoginComponent);
-
-exports["default"] = _default;
+exports["default"] = LoginComponent;

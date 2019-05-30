@@ -3,291 +3,185 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getUser = exports.getAuthRegisterSuccess = exports.getAuthUpdatetPasswordSuccess = exports.getAuthResetPasswordSuccess = exports.getAuthUpdatePasswordSuccess = exports.getRole = exports.getAuthError = exports.getAuthFailedAttempts = exports.getAuthenticated = exports.getAuthLoading = exports.getAuthToken = exports.getAuthPending = exports["default"] = exports.getAuthState = exports.initAuthState = exports.REDUCER_ID = exports.inviteAccepted = exports.clearError = exports.registerSuccess = exports.resetPasswordSuccess = exports.logoutSuccess = exports.loginSuccess = exports.authError = exports.authPending = void 0;
+exports.getSuccess = exports.getError = exports.getErrorCount = exports.getLoading = exports.getPending = exports["default"] = exports.clearError = exports.loaded = exports.reset = exports.success = exports.error = exports.pending = exports.ERROR_ACTION = exports.SUCCESS_ACTION = exports.PENDING_ACTION = exports.CLEAR_ERROR_ACTION = exports.RESET_ACTION = exports.INIT_ACTION = exports.DISABLED_STATE = exports.ENABLED_STATE = exports.LOADING_STATE = exports.ERROR_STATE = exports.PENDING_STATE = void 0;
+var // view states
+PENDING_STATE = 'PENDING_STATE',
+    ERROR_STATE = 'ERROR_STATE',
+    LOADING_STATE = 'LOADING_STATE',
+    ENABLED_STATE = 'ENABLED_STATE',
+    DISABLED_STATE = 'DISABLED_STATE',
+    // actions
+INIT_ACTION = 'INIT_ACTION',
+    RESET_ACTION = 'RESET_ACTION',
+    CLEAR_ERROR_ACTION = 'CLEAR_ERROR_ACTION',
+    PENDING_ACTION = 'PENDING_ACTION',
+    SUCCESS_ACTION = 'SUCCESS_ACTION',
+    ERROR_ACTION = 'ERROR_ACTION';
+/* States */
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+exports.ERROR_ACTION = ERROR_ACTION;
+exports.SUCCESS_ACTION = SUCCESS_ACTION;
+exports.PENDING_ACTION = PENDING_ACTION;
+exports.CLEAR_ERROR_ACTION = CLEAR_ERROR_ACTION;
+exports.RESET_ACTION = RESET_ACTION;
+exports.INIT_ACTION = INIT_ACTION;
+exports.DISABLED_STATE = DISABLED_STATE;
+exports.ENABLED_STATE = ENABLED_STATE;
+exports.LOADING_STATE = LOADING_STATE;
+exports.ERROR_STATE = ERROR_STATE;
+exports.PENDING_STATE = PENDING_STATE;
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-/* ACTIONS */
-var authPending = function authPending() {
+/* Action creators */
+var pending = function pending() {
   return {
-    type: 'AUTH_PENDING'
+    type: PENDING_ACTION
   };
 };
 
-exports.authPending = authPending;
+exports.pending = pending;
 
-var authError = function authError(error) {
+var error = function error(_error) {
   return {
-    type: 'AUTH_ERROR',
-    error: error
+    type: ERROR_ACTION,
+    error: _error
   };
 };
 
-exports.authError = authError;
+exports.error = error;
 
-var loginSuccess = function loginSuccess(user, role) {
+var success = function success() {
   return {
-    type: 'LOGIN_SUCCESS',
-    user: user,
-    role: role
+    type: SUCCESS_ACTION
   };
 };
 
-exports.loginSuccess = loginSuccess;
+exports.success = success;
 
-var logoutSuccess = function logoutSuccess() {
+var reset = function reset() {
   return {
-    type: 'LOGOUT_SUCCESS'
+    type: RESET_ACTION
   };
 };
 
-exports.logoutSuccess = logoutSuccess;
+exports.reset = reset;
 
-var resetPasswordSuccess = function resetPasswordSuccess(email) {
+var loaded = function loaded() {
   return {
-    type: 'RESET_PASSWORD_SUCCESS',
-    email: email
+    type: INIT_ACTION
   };
 };
 
-exports.resetPasswordSuccess = resetPasswordSuccess;
-
-var registerSuccess = function registerSuccess() {
-  return {
-    type: 'REGISTER_SUCCESS'
-  };
-};
-
-exports.registerSuccess = registerSuccess;
+exports.loaded = loaded;
 
 var clearError = function clearError() {
   return {
-    type: 'CLEAR_ERROR'
+    type: CLEAR_ERROR_ACTION
   };
 };
+/* reducer */
+
 
 exports.clearError = clearError;
 
-var inviteAccepted = function inviteAccepted() {
-  return {
-    type: 'INVITE_ACCEPTED'
+var reducer = function reducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+    status: LOADING_STATE
   };
-};
-/* REDUCER */
-
-
-exports.inviteAccepted = inviteAccepted;
-var REDUCER_ID = 'react-redux-accounts';
-exports.REDUCER_ID = REDUCER_ID;
-
-var initAuthState = function initAuthState(user, role) {
-  return {
-    reducerId: REDUCER_ID,
-    state: {
-      updatePasswordSuccess: false,
-      resetPasswordSuccess: false,
-      registerSuccess: false,
-      loading: true,
-      authenticated: false,
-      failedAuthAttempts: 0,
-      error: null,
-      pending: false
-    },
-    role: role,
-    user: user
-  };
-};
-
-exports.initAuthState = initAuthState;
-
-var getAuthState = function getAuthState(state) {
-  var reducers = Object.keys(state);
-
-  for (var i = 0; i < reducers.length; i++) {
-    if (state[reducers[i]].reducerId === REDUCER_ID) {
-      return state[reducers[i]];
-    }
-  }
-
-  return initAuthState();
-};
-
-exports.getAuthState = getAuthState;
-
-var authReducer = function authReducer() {
-  var auth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initAuthState();
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
-    case 'AUTH_PENDING':
-      return _objectSpread({}, auth, {
-        state: _objectSpread({}, auth.state, {
-          pending: true
-        })
-      });
+    case PENDING_ACTION:
+      return {
+        status: PENDING_STATE
+      };
 
-    case 'INVITE_ACCEPTED':
-      return _objectSpread({}, auth, {
-        state: _objectSpread({}, auth.state, {
-          pending: false
-        })
-      });
+    case SUCCESS_ACTION:
+      return {
+        status: ENABLED_STATE,
+        success: true
+      };
 
-    case 'AUTH_ERROR':
-      return _objectSpread({}, auth, {
-        state: _objectSpread({}, auth.state, {
-          failedAuthAttempts: ++auth.state.failedAuthAttempts,
-          error: action.error,
-          loading: false,
-          pending: false
-        })
-      });
+    case ERROR_ACTION:
+      var count = function count(s) {
+        switch (s.status) {
+          case ERROR_STATE:
+            return s.count + 1;
 
-    case 'UPDATE_ROLE':
-      return _objectSpread({}, auth, {
-        role: action.role
-      });
+          default:
+            return 1;
+        }
+      };
 
-    case 'LOGIN_SUCCESS':
-      return _objectSpread({}, auth, {
-        state: _objectSpread({}, auth.state, {
-          authenticated: true,
-          failedAuthAttempts: 0,
-          loading: false,
-          pending: false
-        }),
-        user: action.user,
-        role: action.role
-      });
+      return {
+        status: ERROR_STATE,
+        error: action.error,
+        count: count(state)
+      };
 
-    case 'LOGOUT_SUCCESS':
-      return _objectSpread({}, auth, {
-        state: _objectSpread({}, auth.state, {
-          authenticated: false,
-          failedAuthAttempts: 0,
-          loading: false,
-          pending: false
-        }),
-        user: null,
-        role: null
-      });
-
-    case 'RESET_PASSWORD_SUCCESS':
-      return _objectSpread({}, auth, {
-        state: _objectSpread({}, auth.state, {
-          failedAuthAttempts: 0,
-          resetPasswordSuccess: true,
-          pending: false
-        })
-      });
-
-    case 'REGISTER_SUCCESS':
-      return _objectSpread({}, auth, {
-        state: _objectSpread({}, auth.state, {
-          registerSuccess: true,
-          pending: false,
-          failedAuthAttempts: 0,
-          error: null
-        })
-      });
-
-    case 'SET_INITIALIZED':
-      return _objectSpread({}, auth, {
-        state: _objectSpread({}, auth.state, {
-          loading: false
-        })
-      });
-
-    case 'CLEAR_ERROR':
-      return _objectSpread({}, auth, {
-        state: _objectSpread({}, auth.state, {
-          error: null
-        })
-      });
+    case RESET_ACTION:
+    case INIT_ACTION:
+    case CLEAR_ERROR_ACTION:
+      return {
+        status: ENABLED_STATE,
+        success: false
+      };
 
     default:
-      return auth;
+      return state;
     //(action.type: empty)
   }
 };
 
-var _default = authReducer;
+var _default = reducer;
 /* SELECTORS */
 
 exports["default"] = _default;
 
-var getAuthPending = function getAuthPending(auth) {
-  return auth.state.pending;
+var getPending = function getPending(state) {
+  return state.status === PENDING_STATE;
 };
 
-exports.getAuthPending = getAuthPending;
+exports.getPending = getPending;
 
-var getAuthToken = function getAuthToken(auth) {
-  if (auth.role && auth.role.token) {
-    return auth.role.token;
+var getLoading = function getLoading(state) {
+  return state.status === LOADING_STATE;
+};
+
+exports.getLoading = getLoading;
+
+var getErrorCount = function getErrorCount(state) {
+  switch (state.status) {
+    case ERROR_STATE:
+      return state.count;
+
+    default:
+      return 0;
   }
 };
 
-exports.getAuthToken = getAuthToken;
+exports.getErrorCount = getErrorCount;
 
-var getAuthLoading = function getAuthLoading(auth) {
-  return auth.state.loading;
+var getError = function getError(state) {
+  switch (state.status) {
+    case ERROR_STATE:
+      return state.error;
+
+    default:
+      return null;
+  }
 };
 
-exports.getAuthLoading = getAuthLoading;
+exports.getError = getError;
 
-var getAuthenticated = function getAuthenticated(auth) {
-  return auth.state.authenticated;
+var getSuccess = function getSuccess(state) {
+  switch (state.status) {
+    case ENABLED_STATE:
+    case DISABLED_STATE:
+      return state.success;
+
+    default:
+      return null;
+  }
 };
 
-exports.getAuthenticated = getAuthenticated;
-
-var getAuthFailedAttempts = function getAuthFailedAttempts(auth) {
-  return auth.state.failedAuthAttempts;
-};
-
-exports.getAuthFailedAttempts = getAuthFailedAttempts;
-
-var getAuthError = function getAuthError(auth) {
-  return auth.state.error;
-};
-
-exports.getAuthError = getAuthError;
-
-var getRole = function getRole(auth) {
-  return auth.role;
-};
-
-exports.getRole = getRole;
-
-var getAuthUpdatePasswordSuccess = function getAuthUpdatePasswordSuccess(auth) {
-  return auth.state.updatePasswordSuccess;
-};
-
-exports.getAuthUpdatePasswordSuccess = getAuthUpdatePasswordSuccess;
-
-var getAuthResetPasswordSuccess = function getAuthResetPasswordSuccess(auth) {
-  return auth.state.resetPasswordSuccess;
-};
-
-exports.getAuthResetPasswordSuccess = getAuthResetPasswordSuccess;
-
-var getAuthUpdatetPasswordSuccess = function getAuthUpdatetPasswordSuccess(auth) {
-  return auth.state.updatePasswordSuccess;
-};
-
-exports.getAuthUpdatetPasswordSuccess = getAuthUpdatetPasswordSuccess;
-
-var getAuthRegisterSuccess = function getAuthRegisterSuccess(auth) {
-  return auth.state.registerSuccess;
-};
-
-exports.getAuthRegisterSuccess = getAuthRegisterSuccess;
-
-var getUser = function getUser(auth) {
-  return auth.user;
-};
-
-exports.getUser = getUser;
+exports.getSuccess = getSuccess;

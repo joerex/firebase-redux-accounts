@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.RegisterComponent = void 0;
+exports["default"] = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -13,15 +13,11 @@ var Yup = _interopRequireWildcard(require("yup"));
 
 var _SelectField = _interopRequireDefault(require("../SelectField/SelectField"));
 
-var _state = require("../../state");
-
-var _reactRedux = require("react-redux");
-
-var _reactRouterDom = require("react-router-dom");
-
 var _SubmitButton = _interopRequireDefault(require("../SubmitButton/SubmitButton"));
 
 require("./Register.css");
+
+var _state = require("../../state");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -31,17 +27,10 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var RegisterComponent = function RegisterComponent(props) {
-  var error = props.error,
-      token = props.token,
-      registerSuccess = props.registerSuccess,
-      successMessage = props.successMessage,
-      redirect = props.redirect,
-      uid = props.uid,
-      fields = props.fields,
-      action = props.action,
-      dispatch = props.dispatch,
-      pending = props.pending;
+var _default = function _default(props) {
+  var state = props.state,
+      _onSubmit = props.onSubmit,
+      fields = props.fields;
   var fieldComponents = fields.map(function (field, i) {
     return _react["default"].createElement("div", {
       key: i
@@ -79,62 +68,31 @@ var RegisterComponent = function RegisterComponent(props) {
     return _objectSpread({}, accumulator, _defineProperty({}, field.name, field.value || ''));
   }, {});
 
-  var acceptInvite = function acceptInvite(values) {
-    return dispatch(action(values, token, uid));
-  };
-
-  var newRegister = function newRegister(values, reset) {
-    return dispatch(action(values, token, reset));
-  };
-
-  var register = function register(values, _ref) {
-    var resetForm = _ref.resetForm;
-    uid ? acceptInvite(values) : newRegister(values, resetForm);
-  };
-
-  var errorMessage = error && _react["default"].createElement("div", {
+  var errorMessage = state.status === _state.ERROR_STATE && _react["default"].createElement("div", {
     className: "alert alert-danger error"
-  }, error);
+  }, state.error);
 
   return _react["default"].createElement("div", {
     className: "Register accounts-form"
-  }, registerSuccess && _react["default"].createElement("div", {
+  }, state.success && _react["default"].createElement("div", {
     className: "alert alert-success"
-  }, successMessage ? successMessage : 'Your account has been created.', redirect && _react["default"].createElement(_reactRouterDom.Link, {
-    to: redirect
-  }, "Login")), _react["default"].createElement(_formik.Formik, {
+  }, _react["default"].createElement("span", null, "Your account has been created.")), _react["default"].createElement(_formik.Formik, {
     initialValues: initialValues,
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema: schema,
     onSubmit: function onSubmit(e, b) {
-      return register(e, b);
+      return _onSubmit(e, b);
     },
-    render: function render(_ref2) {
-      var handleSubmit = _ref2.handleSubmit;
+    render: function render(_ref) {
+      var handleSubmit = _ref.handleSubmit;
       return _react["default"].createElement(_formik.Form, null, fieldComponents, _react["default"].createElement(_SubmitButton["default"], {
         onSubmit: handleSubmit,
-        pending: pending,
+        pending: state.status === _state.PENDING_STATE,
         text: "Register"
       }), errorMessage);
     }
   }));
 };
-
-exports.RegisterComponent = RegisterComponent;
-
-var _default = (0, _reactRedux.connect)(function (state) {
-  var authState = (0, _state.getAuthState)(state);
-  return {
-    error: (0, _state.getAuthError)(authState),
-    registerSuccess: (0, _state.getAuthRegisterSuccess)(authState),
-    token: (0, _state.getAuthToken)(authState),
-    pending: (0, _state.getAuthPending)(authState)
-  };
-}, function (dispatch) {
-  return {
-    dispatch: dispatch
-  };
-})(RegisterComponent);
 
 exports["default"] = _default;

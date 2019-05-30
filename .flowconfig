@@ -2,6 +2,7 @@
 
 [include]
 src/*
+../react-redux-firebase-starter/node_modules/react/*
 
 [libs]
 
