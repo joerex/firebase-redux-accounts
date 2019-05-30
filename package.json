@@ -1,6 +1,6 @@
 {
   "name": "firebase-redux-accounts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/",
   "author": "Joe Reckley",
@@ -10,13 +10,13 @@
     "@babel/polyfill": "^7.4.3",
     "firebase": "^5.9.3",
     "formik": "^1.5.2",
-    "react": "^16.8.1",
+    "react": "^16.8.6",
     "react-dom": "^16.6.1",
-    "react-redux": "^5.1.0",
+    "react-redux": "^7.0.3",
     "react-router-dom": "^4.3.1",
     "react-select": "^2.1.1",
-    "redux-thunk": "^2.3.0",
     "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
     "yup": "^0.26.6"
   },
   "devDependencies": {

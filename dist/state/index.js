@@ -79,7 +79,7 @@ var inviteAccepted = function inviteAccepted() {
 
 
 exports.inviteAccepted = inviteAccepted;
-var REDUCER_ID = 'react-redux-accounts';
+var REDUCER_ID = 'firebase-redux-accounts';
 exports.REDUCER_ID = REDUCER_ID;
 
 var initAuthState = function initAuthState(user, role) {

@@ -50,7 +50,7 @@ export const inviteAccepted = (): Action => {
 
 /* REDUCER */
 
-export const REDUCER_ID: string = 'react-redux-accounts'
+export const REDUCER_ID: string = 'firebase-redux-accounts'
 
 export const initAuthState = (user: ?User, role: ?Role): Auth => {
     return {
