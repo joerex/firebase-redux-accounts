@@ -1,11 +1,11 @@
 {
-  "name": "react-redux-accounts",
-  "version": "0.0.11",
+  "name": "firebase-redux-accounts",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/",
   "author": "Joe Reckley",
   "license": "ISC",
-  "repository": "https://github.com/joerex/react-redux-accounts.git",
+  "repository": "https://github.com/joerex/firebase-redux-accounts.git",
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
     "firebase": "^5.9.3",
