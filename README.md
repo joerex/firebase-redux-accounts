@@ -1,72 +1,88 @@
-# Firebase + Redux Accounts • [![Build Status](https://badge.buildkite.com/7ca43607a8d528c59d06625800bd8e709c995decbcdaea0111.svg)](https://buildkite.com/joerex/firebase-redux-accounts)
+# Redux Accounts • [![Build Status](https://badge.buildkite.com/7ca43607a8d528c59d06625800bd8e709c995decbcdaea0111.svg)](https://buildkite.com/joerex/firebase-redux-accounts)
 
-For use with `react` + `react-redux` apps. Provides components and state management for Firebase projects.
+For use with `react` + `react-redux` apps. 
 
----
+### Components
+- login
+- logout
+- register
+- forgot password
+
+### Reducers
+
+The `view` reducer is designed to hold the common states of a view.
+
+*State*
+
+```
+loading | enabled [success] | disabled | pending | error [message]
+```
+ 
+ *Actions*
+ 
+ ```
+ init | pending | success | error
+ ```
+ 
+ ---
+ 
+
+The `forms` reducer is a composition of view reducers to facilitate common application account forms. 
+It's optional but may save you some time writing boilerplate. At the very least it's a good example of how the `view`
+reducer and actions can be composed in your app.
+
+*State*
+
+```
+acceptInvite : ViewState,
+register: ViewState,
+forgotPassword: ViewState,
+login: ViewState,
+publicRegister: ViewState,
+logout: ViewState,
+```
+ 
+ *Actions*
+ 
+ ```
+ login <view action> | logout <view action> | acceptInvite <view action> | register <view action> | publicRegister <view action> | forgotPassword <view action> | error
+ ```
+ 
 
 ## Getting started
 
-#### Setup Firebase
-
-- Create a firebase project
-- Copy project settings to your react app
 
 #### Install Dependencies
-This guide assumes you are already using `react` and `react-redux`.
+This guide assumes you are already using `react` and `react-redux`. Some of the functionality provided also depends on `redux-thunk`.
+
+#### Use reducer
+Todo: explain
 
 ```aidl
-$ npm install firebase redux-thunk firebase-redux-accounts
-```
+// load all possible forms into state
 
-#### Combine reducer
-
-The auth reducer can be added as any key in `combineReducers`.
-
-```aidl
 import {
     createStore, 
     applyMiddleware, 
     combineReducers 
 } from 'redux';
 import thunk from 'redux-thunk';
-import authReducer from 'firebase-redux-accounts/dist/state';
+import accountsReducer from 'redux-accounts/state/forms';
 import appReducer './reducers'
 
 const store = createStore(
   combineReducers({
-      auth: authReducer,
+      accounts: accountsReducer,
       app: appReducer,
   }),
   applyMiddleware(thunk)
 );
 
 ...
+
+
 ```
 
-#### Initialize Firebase app
-An `auth` service wraps the firebase application and dispatches actions on auth state change:
-
-- `authError` 
-- `loginSuccess`
-- `logoutSuccess`
-
-```aidl
-// App.js
-
-import * as firebase from "firebase"
-import auth from 'firebase-redux-accounts/dist/services'
-import {settings} from './settings';
-
-class App extends Component {
-  componentDidMount() {
-    if (!firebase.apps.length) {
-      firebase.initializeApp(settings.firebase)
-      auth.init(firebase.app(), this.props.dispatch)
-    }
-  }
-  render() { ... } 
-}
-```
 
 #### Use selectors
 

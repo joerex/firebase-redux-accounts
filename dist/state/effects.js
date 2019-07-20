@@ -1,19 +1,19 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.logout = exports.login = exports.adminRegister = exports.acceptInvite = exports.register = exports.resetPassword = exports.clearLocalStorage = void 0;
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
 var API_ROOT = process.env.REACT_APP_API_ROOT || '';
 /***
@@ -23,7 +23,7 @@ var API_ROOT = process.env.REACT_APP_API_ROOT || '';
  */
 
 var ok = function ok(response) {
-  return _typeof(response) === 'object' && Object.keys(response).length === 0;
+  return (0, _typeof2["default"])(response) === 'object' && Object.keys(response).length === 0;
 };
 /***
  * Map Error
@@ -33,7 +33,7 @@ var ok = function ok(response) {
 
 
 var mapError = function mapError(error) {
-  var message = _typeof(error) !== 'object' || error instanceof TypeError || error instanceof SyntaxError ? "An unexpected problem has occured. Please check your internet connection.\n\n               If the problem persists please contact us." : error.message;
+  var message = (0, _typeof2["default"])(error) !== 'object' || error instanceof TypeError || error instanceof SyntaxError || !error.message ? "An unexpected problem has occured. Please check your internet connection.\n\n               If the problem persists please contact us." : error.message;
   return message;
 };
 /***
@@ -64,11 +64,11 @@ var resetPassword = function resetPassword(sendPasswordResetEmail, email, succes
   return (
     /*#__PURE__*/
     function () {
-      var _ref = _asyncToGenerator(
+      var _ref = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(dispatch) {
+      _regenerator["default"].mark(function _callee(dispatch) {
         var response;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return _regenerator["default"].wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -121,10 +121,10 @@ var register = function register(createUserWithEmailAndPassword, credentials, pr
   return (
     /*#__PURE__*/
     function () {
-      var _ref2 = _asyncToGenerator(
+      var _ref2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee2(dispatch) {
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      _regenerator["default"].mark(function _callee2(dispatch) {
+        return _regenerator["default"].wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
@@ -172,24 +172,26 @@ exports.register = register;
  * @param error
  * @returns {Function}
  */
-var acceptInvite = function acceptInvite(params, token, key, success, error) {
+var acceptInvite = function acceptInvite(_acceptInvite, params, key, token, success, error) {
   return (
     /*#__PURE__*/
     function () {
-      var _ref3 = _asyncToGenerator(
+      var _ref3 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee3(dispatch, settings) {
+      _regenerator["default"].mark(function _callee3(dispatch, settings) {
         var endpoint, request, response;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return _regenerator["default"].wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.prev = 0;
+                // await acceptInvite({ ...params, key, token })
+                // dispatch(success())
                 endpoint = settings.endpoint ? settings.endpoint.inviteUser : '/acceptInvite';
                 _context3.next = 4;
                 return fetch(API_ROOT + endpoint, {
                   method: 'POST',
-                  body: JSON.stringify(_objectSpread({}, params, {
+                  body: JSON.stringify((0, _objectSpread2["default"])({}, params, {
                     key: key,
                     token: token
                   })),
@@ -262,11 +264,11 @@ var adminRegister = function adminRegister(params, token, success, error, reset,
   return (
     /*#__PURE__*/
     function () {
-      var _ref4 = _asyncToGenerator(
+      var _ref4 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee4(dispatch) {
+      _regenerator["default"].mark(function _callee4(dispatch) {
         var endpoint, request, response;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return _regenerator["default"].wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
@@ -275,7 +277,7 @@ var adminRegister = function adminRegister(params, token, success, error, reset,
                 _context4.next = 4;
                 return fetch(API_ROOT + endpoint, {
                   method: 'POST',
-                  body: JSON.stringify(_objectSpread({}, params, {
+                  body: JSON.stringify((0, _objectSpread2["default"])({}, params, {
                     token: token
                   })),
                   headers: {
@@ -339,11 +341,11 @@ var login = function login(signInWithEmailAndPassword, params, success, error) {
   return (
     /*#__PURE__*/
     function () {
-      var _ref5 = _asyncToGenerator(
+      var _ref5 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee5(dispatch) {
+      _regenerator["default"].mark(function _callee5(dispatch) {
         var response;
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        return _regenerator["default"].wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:

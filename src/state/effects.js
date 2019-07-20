@@ -23,7 +23,8 @@ const mapError = (error: any): string => {
     const message =
         typeof error !== 'object' ||
         error instanceof TypeError ||
-        error instanceof SyntaxError
+        error instanceof SyntaxError ||
+        !error.message
             ? `An unexpected problem has occured. Please check your internet connection.\n
                If the problem persists please contact us.`
             : error.message
@@ -126,14 +127,18 @@ export type AcceptInviteParams = {
  * @returns {Function}
  */
 export const acceptInvite = (
+    acceptInvite: Function,
     params: AcceptInviteParams,
-    token: string,
     key: string,
+    token: string,
     success: Function,
     error: Function
 ) => {
     return async (dispatch: Function, settings: AuthSettings) => {
         try {
+            // await acceptInvite({ ...params, key, token })
+            // dispatch(success())
+
             const endpoint = settings.endpoint
                 ? settings.endpoint.inviteUser
                 : '/acceptInvite'

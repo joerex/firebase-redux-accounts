@@ -7,8 +7,8 @@ import SelectField from '../SelectField/SelectField'
 import SubmitButton from '../SubmitButton/SubmitButton'
 import './Register.css'
 import type { Field as FieldType } from '../../index'
-import type { ViewState } from '../../state'
-import { ERROR_STATE, PENDING_STATE } from '../../state'
+import type { ViewState } from '../../state/views'
+import { ERROR_STATE, PENDING_STATE } from '../../state/views'
 
 type Props = {
     state: ViewState,

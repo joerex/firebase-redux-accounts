@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react'
-import type { ViewState } from '../../state'
-import { PENDING_STATE } from '../../state'
+import type { ViewState } from '../../state/views'
+import { PENDING_STATE } from '../../state/views'
 
 type Props = {
     text: ?string,

@@ -1,9 +1,17 @@
 "use strict";
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+var _objectSpread4 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -17,15 +25,7 @@ var _SubmitButton = _interopRequireDefault(require("../SubmitButton/SubmitButton
 
 require("./Register.css");
 
-var _state = require("../../state");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj["default"] = obj; return newObj; } }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+var _views = require("../../state/views");
 
 var _default = function _default(props) {
   var state = props.state,
@@ -58,17 +58,17 @@ var _default = function _default(props) {
 
   var shape = fields.reduce(function (accumulator, field) {
     if (field.schema) {
-      return _objectSpread({}, accumulator, _defineProperty({}, field.name, field.schema));
+      return (0, _objectSpread4["default"])({}, accumulator, (0, _defineProperty2["default"])({}, field.name, field.schema));
     } else {
       return accumulator;
     }
   }, {});
   var schema = Yup.object().shape(shape);
   var initialValues = fields.reduce(function (accumulator, field) {
-    return _objectSpread({}, accumulator, _defineProperty({}, field.name, field.value || ''));
+    return (0, _objectSpread4["default"])({}, accumulator, (0, _defineProperty2["default"])({}, field.name, field.value || ''));
   }, {});
 
-  var errorMessage = state.status === _state.ERROR_STATE && _react["default"].createElement("div", {
+  var errorMessage = state.status === _views.ERROR_STATE && _react["default"].createElement("div", {
     className: "alert alert-danger error"
   }, state.error);
 
@@ -88,7 +88,7 @@ var _default = function _default(props) {
       var handleSubmit = _ref.handleSubmit;
       return _react["default"].createElement(_formik.Form, null, fieldComponents, _react["default"].createElement(_SubmitButton["default"], {
         onSubmit: handleSubmit,
-        pending: state.status === _state.PENDING_STATE,
+        pending: state.status === _views.PENDING_STATE,
         text: "Register"
       }), errorMessage);
     }

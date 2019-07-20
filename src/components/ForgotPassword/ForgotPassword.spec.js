@@ -1,10 +1,15 @@
 import React from 'react'
 import { mount, shallow } from 'enzyme'
-import { ForgotPasswordComponent } from './ForgotPassword'
-import { LoginComponent } from '../Login/Login'
+import ForgotPasswordComponent from './ForgotPassword'
+import { ENABLED_STATE, ERROR_STATE } from '../../state/views'
+
+const mockProps = {
+    state: { status: ENABLED_STATE },
+    onSubmit: () => {},
+}
 
 const renderTests = () => {
-    const component = mount(<ForgotPasswordComponent />)
+    const component = mount(<ForgotPasswordComponent {...mockProps} />)
 
     it('should render an email input', () => {
         expect(component.find('input[name="email"]').exists()).toEqual(true)
@@ -18,12 +23,13 @@ const renderTests = () => {
 const stateTests = () => {
     const infoSelector = 'div.alert.alert-info'
     const successSelector = 'div.alert.alert-success'
-    const component = shallow(<ForgotPasswordComponent />)
+    const mockSuccessState = { status: ENABLED_STATE, success: true }
+    const component = shallow(<ForgotPasswordComponent {...mockProps} />)
 
     it('should display info message or success message', () => {
         expect(component.find(infoSelector).exists()).toEqual(true)
         expect(component.find(successSelector).exists()).toEqual(false)
-        component.setProps({ resetSuccess: true })
+        component.setProps({ state: mockSuccessState })
         expect(component.find(infoSelector).exists()).toEqual(false)
         expect(component.find(successSelector).exists()).toEqual(true)
     })
@@ -32,11 +38,12 @@ const stateTests = () => {
 const errorTests = () => {
     const error = 'Houston, we have a problem'
     const selector = 'div.alert.alert-danger.error'
-    const component = shallow(<ForgotPasswordComponent />)
+    const mockErrorState = { status: ERROR_STATE, error }
+    const component = shallow(<ForgotPasswordComponent {...mockProps} />)
 
     it('should display an error message from props', () => {
         expect(component.find(selector).exists()).toEqual(false)
-        component.setProps({ error })
+        component.setProps({ state: mockErrorState })
         expect(component.find(selector).text()).toEqual(error)
     })
 }
@@ -44,7 +51,7 @@ const errorTests = () => {
 const actionTests = () => {
     const resetPassword = jest.fn()
     const email = 'bob@gmail.com'
-    const props = { resetPassword }
+    const props = { ...mockProps, onSubmit: () => resetPassword(email) }
     const component = mount(<ForgotPasswordComponent {...props} />)
 
     component.setState({ email })

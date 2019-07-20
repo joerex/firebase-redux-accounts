@@ -8,6 +8,7 @@ describe('SelectField Component', () => {
     const props = {
         placeholder: 'Role',
         options,
+        form: { values: { role: options[0] } },
         field: {
             name: 'role',
             type: 'select',

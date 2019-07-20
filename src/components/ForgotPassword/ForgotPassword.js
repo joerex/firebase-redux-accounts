@@ -2,7 +2,8 @@
 
 import React, { Component } from 'react'
 import SubmitButton from '../SubmitButton/SubmitButton'
-import type { ViewState } from '../../state'
+import type { ViewState } from '../../state/views'
+import { ERROR_STATE, PENDING_STATE } from '../../state/views'
 
 type Props = {
     state: ViewState,
@@ -36,7 +37,7 @@ export default class ForgotPasswordComponent extends Component<Props, State> {
             </div>
         )
 
-        const errorMessage = state.status === 'ERROR' && (
+        const errorMessage = state.status === ERROR_STATE && (
             <div className="alert alert-danger error">{state.error}</div>
         )
 
@@ -54,7 +55,7 @@ export default class ForgotPasswordComponent extends Component<Props, State> {
                     />
                     <SubmitButton
                         onSubmit={e => this.handleSubmit(e)}
-                        pending={state.status === 'PENDING'}
+                        pending={state.status === PENDING_STATE}
                         text="Send Reset Link"
                     />
                     {errorMessage}

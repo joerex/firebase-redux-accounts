@@ -1,17 +1,26 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
+
 var _react = _interopRequireDefault(require("react"));
 
 var _enzyme = require("enzyme");
 
-var _ForgotPassword = require("./ForgotPassword");
+var _ForgotPassword = _interopRequireDefault(require("./ForgotPassword"));
 
-var _Login = require("../Login/Login");
+var _views = require("../../state/views");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var mockProps = {
+  state: {
+    status: _views.ENABLED_STATE
+  },
+  onSubmit: function onSubmit() {}
+};
 
 var renderTests = function renderTests() {
-  var component = (0, _enzyme.mount)(_react["default"].createElement(_ForgotPassword.ForgotPasswordComponent, null));
+  var component = (0, _enzyme.mount)(_react["default"].createElement(_ForgotPassword["default"], mockProps));
   it('should render an email input', function () {
     expect(component.find('input[name="email"]').exists()).toEqual(true);
   });
@@ -23,12 +32,16 @@ var renderTests = function renderTests() {
 var stateTests = function stateTests() {
   var infoSelector = 'div.alert.alert-info';
   var successSelector = 'div.alert.alert-success';
-  var component = (0, _enzyme.shallow)(_react["default"].createElement(_ForgotPassword.ForgotPasswordComponent, null));
+  var mockSuccessState = {
+    status: _views.ENABLED_STATE,
+    success: true
+  };
+  var component = (0, _enzyme.shallow)(_react["default"].createElement(_ForgotPassword["default"], mockProps));
   it('should display info message or success message', function () {
     expect(component.find(infoSelector).exists()).toEqual(true);
     expect(component.find(successSelector).exists()).toEqual(false);
     component.setProps({
-      resetSuccess: true
+      state: mockSuccessState
     });
     expect(component.find(infoSelector).exists()).toEqual(false);
     expect(component.find(successSelector).exists()).toEqual(true);
@@ -38,11 +51,15 @@ var stateTests = function stateTests() {
 var errorTests = function errorTests() {
   var error = 'Houston, we have a problem';
   var selector = 'div.alert.alert-danger.error';
-  var component = (0, _enzyme.shallow)(_react["default"].createElement(_ForgotPassword.ForgotPasswordComponent, null));
+  var mockErrorState = {
+    status: _views.ERROR_STATE,
+    error: error
+  };
+  var component = (0, _enzyme.shallow)(_react["default"].createElement(_ForgotPassword["default"], mockProps));
   it('should display an error message from props', function () {
     expect(component.find(selector).exists()).toEqual(false);
     component.setProps({
-      error: error
+      state: mockErrorState
     });
     expect(component.find(selector).text()).toEqual(error);
   });
@@ -51,10 +68,12 @@ var errorTests = function errorTests() {
 var actionTests = function actionTests() {
   var resetPassword = jest.fn();
   var email = 'bob@gmail.com';
-  var props = {
-    resetPassword: resetPassword
-  };
-  var component = (0, _enzyme.mount)(_react["default"].createElement(_ForgotPassword.ForgotPasswordComponent, props));
+  var props = (0, _objectSpread2["default"])({}, mockProps, {
+    onSubmit: function onSubmit() {
+      return resetPassword(email);
+    }
+  });
+  var component = (0, _enzyme.mount)(_react["default"].createElement(_ForgotPassword["default"], props));
   component.setState({
     email: email
   });

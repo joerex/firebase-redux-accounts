@@ -2,8 +2,8 @@
 
 import React, { Component } from 'react'
 import SubmitButton from '../SubmitButton/SubmitButton'
-import type { ViewState } from '../../state'
-import { ERROR_STATE, PENDING_STATE } from '../../state'
+import type { ViewState } from '../../state/views'
+import { ERROR_STATE, PENDING_STATE } from '../../state/views'
 
 type Props = {
     state: ViewState,

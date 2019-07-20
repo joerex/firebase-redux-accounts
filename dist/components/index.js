@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -12,8 +14,6 @@ var _Logout = _interopRequireDefault(require("./Logout/Logout"));
 var _Register = _interopRequireDefault(require("./Register/Register"));
 
 var _ForgotPassword = _interopRequireDefault(require("./ForgotPassword/ForgotPassword"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var Login = _Login["default"];
 exports.Login = Login;
